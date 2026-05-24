@@ -7,17 +7,42 @@ Uses Phase 3 agent (Groq + hybrid search). Run from repo root:
 """
 from __future__ import annotations
 
+import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
 from pathlib import Path
 
-import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parent
 PHASE3 = ROOT / "Phase3"
+
+
+def configure_environment() -> None:
+    """Load .env locally and Streamlit Cloud secrets in production."""
+    try:
+        from dotenv import load_dotenv
+
+        load_dotenv(PHASE3 / ".env")
+        load_dotenv(ROOT / ".env")
+    except ImportError:
+        pass
+
+    try:
+        secrets = st.secrets
+        for key in ("GROQ_API_KEY", "GROQ_MODEL", "GROQ_API_BASE_URL"):
+            if key in secrets:
+                os.environ[key] = str(secrets[key])
+    except Exception:
+        pass
+
+
+configure_environment()
+
 if str(PHASE3) not in sys.path:
     sys.path.insert(0, str(PHASE3))
+
+import pandas as pd
 
 LOCATIONS = [
     "",
@@ -111,6 +136,12 @@ def main() -> None:
     except Exception as e:
         st.error(f"Failed to load app: {e}")
         st.stop()
+
+    if not os.getenv("GROQ_API_KEY"):
+        st.warning(
+            "GROQ_API_KEY is not set. Add it to Phase3/.env locally or "
+            "Streamlit Cloud **Settings → Secrets** (see `.streamlit/secrets.toml.example`)."
+        )
 
     col1, col2, col3 = st.columns(3)
     with col1:

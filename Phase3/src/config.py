@@ -1,11 +1,19 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+
+    _PHASE3_ROOT = Path(__file__).resolve().parent.parent
+    _REPO_ROOT = _PHASE3_ROOT.parent
+    load_dotenv(_PHASE3_ROOT / ".env")
+    load_dotenv(_REPO_ROOT / ".env")
+except ImportError:
+    pass
 
 PHASE3_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = PHASE3_ROOT.parent
+# Ensure env vars from Streamlit Cloud secrets can override after import
 
 # Reuse Phase 2 enriched data and Chroma index
 PHASE2_ROOT = REPO_ROOT / "Phase2"

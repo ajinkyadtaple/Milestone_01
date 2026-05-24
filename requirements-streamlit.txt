@@ -1,2 +1,2 @@
-streamlit>=1.28.0
--r Phase3/requirements.txt
+# Local dev: same deps as Streamlit Cloud (see requirements.txt at repo root)
+-r requirements.txt

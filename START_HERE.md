@@ -48,14 +48,16 @@ python server.py
 1. **Phase 2 data**: `Phase2\data\zomato_enriched.csv` (run `cd Phase2 && python -m src.ingestion` if missing)
 2. **Groq API key**: copy `Phase3\.env.example` → `Phase3\.env` and set `GROQ_API_KEY`
 
-## Streamlit UI (alternative)
+## Streamlit UI (local + Streamlit Cloud)
 
 ```powershell
-pip install -r requirements-streamlit.txt
+pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-Opens at http://localhost:8501 (uses Phase 3 agent in-process; set `GROQ_API_KEY` in `Phase3\.env`).
+Opens at http://localhost:8501. Set `GROQ_API_KEY` in `Phase3\.env` locally.
+
+**Streamlit Cloud:** set main file to `streamlit_app.py`, use root `requirements.txt`, and add secrets (see `.streamlit/secrets.toml.example`).
 
 ## UI design (Next.js via Google Stitch)
 
