@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zomato AI — Premium Recommendations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header>
+    <div>
+      <span class="logo-text">Zomato<span>AI</span></span>
+      <span class="badge">PHASE 4</span>
+    </div>
+    <div class="header-right">
+      <span id="api-status" class="api-status">Checking API…</span>
+      <span id="session-badge" class="session-badge hidden">Session</span>
+      <button type="button" id="new-session-btn" class="btn-ghost">New session</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="control-panel">
+      <h2 class="section-title">Find restaurants</h2>
+      <form id="search-form">
+        <div class="form-group">
+          <label for="location">Location</label>
+          <select id="location" class="input-control">
+            <option value="">Any area</option>
+            <option value="Banashankari">Banashankari</option>
+            <option value="Basavanagudi">Basavanagudi</option>
+            <option value="Bellandur">Bellandur</option>
+            <option value="BTM">BTM</option>
+            <option value="Indiranagar">Indiranagar</option>
+            <option value="Jayanagar">Jayanagar</option>
+            <option value="JP Nagar">JP Nagar</option>
+            <option value="Koramangala">Koramangala</option>
+            <option value="Malleshwaram">Malleshwaram</option>
+            <option value="Marathahalli">Marathahalli</option>
+            <option value="Whitefield">Whitefield</option>
+            <option value="HSR">HSR</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="cuisine">Cuisine</label>
+          <input type="text" id="cuisine" class="input-control" placeholder="e.g. Italian, North Indian" />
+        </div>
+
+        <div class="form-group">
+          <label>Budget tier</label>
+          <div class="budget-selector">
+            <button type="button" class="budget-btn" data-tier="low">$</button>
+            <button type="button" class="budget-btn" data-tier="medium">$$</button>
+            <button type="button" class="budget-btn" data-tier="high">$$$</button>
+          </div>
+          <input type="hidden" id="budget_tier" value="" />
+        </div>
+
+        <div class="form-group">
+          <label for="max_cost">Max cost for two (₹)</label>
+          <input type="number" id="max_cost" class="input-control" placeholder="e.g. 2000" min="0" step="50" />
+        </div>
+
+        <div class="form-group">
+          <label for="min_rating">Minimum rating</label>
+          <select id="min_rating" class="input-control">
+            <option value="0">Any</option>
+            <option value="3.5">3.5★+</option>
+            <option value="4.0" selected>4.0★+</option>
+            <option value="4.5">4.5★+</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Soft preferences</label>
+          <textarea id="description" class="input-control" rows="3" placeholder="Quiet rooftop, family-friendly, spicy food…"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Get AI recommendations</button>
+      </form>
+    </section>
+
+    <section class="results-panel">
+      <div id="welcome-view" class="welcome-card">
+        <div class="welcome-icon">🍽️</div>
+        <h2>Discover your next meal</h2>
+        <p>
+          Phase 4 UI powered by the Phase 3 API — hybrid search, session memory, and Groq-ranked top picks with personalized explanations.
+        </p>
+      </div>
+
+      <div id="loader-view" class="hidden">
+        <div id="progress-steps" class="progress-steps">
+          <span class="progress-step active">🔍 Filtering database…</span>
+          <span class="progress-step">🧠 AI reviewing matches…</span>
+          <span class="progress-step">🍽️ Plating recommendations…</span>
+        </div>
+        <div class="card-grid" style="margin-top: 1rem">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+      </div>
+
+      <div id="agent-bar" class="agent-bar hidden">
+        <span id="agent-text"></span>
+      </div>
+
+      <div id="error-view" class="error-message hidden">
+        <h3>Something went wrong</h3>
+        <p id="error-text"></p>
+      </div>
+
+      <div id="results-grid" class="card-grid hidden"></div>
+    </section>
+  </main>
+
+  <button type="button" id="chat-toggle" class="chat-fab" aria-label="Open chat">💬</button>
+
+  <aside id="chat-panel" class="chat-panel">
+    <div class="chat-header">Follow-up chat</div>
+    <div id="chat-messages" class="chat-messages">
+      <div class="chat-bubble assistant">
+        Ask follow-ups after a search — e.g. “show me the first one with outdoor seating”.
+      </div>
+    </div>
+    <form id="chat-form" class="chat-form">
+      <input type="text" id="chat-input" placeholder="Refine your picks…" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </aside>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/app.js" defer></script>
+</html>
