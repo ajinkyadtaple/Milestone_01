@@ -59,6 +59,14 @@ Opens at http://localhost:8501. Set `GROQ_API_KEY` in `Phase3\.env` locally.
 
 **Streamlit Cloud:** set main file to `streamlit_app.py`, use root `requirements.txt`, and add secrets (see `.streamlit/secrets.toml.example`).
 
+## Vercel (Phase 3 API + Phase 4 UI)
+
+Vercel uses root **`app.py`** as the FastAPI entrypoint (Phase 3). The build copies `Phase4/public` → `public/` for the static UI.
+
+1. Import the GitHub repo in [Vercel](https://vercel.com).
+2. **Environment variables:** `GROQ_API_KEY` (required), optional `GROQ_MODEL`, `GROQ_API_BASE_URL`.
+3. Deploy — API routes: `/health`, `/recommend`, `/docs`; UI at `/` from `public/`.
+
 ## UI design (Next.js via Google Stitch)
 
 Prompts for generating mockups and screens: [Docs/google-stitch-ui-prompt.md](Docs/google-stitch-ui-prompt.md)

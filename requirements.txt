@@ -1,4 +1,6 @@
-# Streamlit Cloud reads this file from the repo root (do not use -r includes).
+# Repo root deps: Streamlit Cloud + Vercel (FastAPI). Do not use -r includes.
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
 streamlit>=1.28.0
 python-dotenv>=1.0.0
 pandas>=2.0.0

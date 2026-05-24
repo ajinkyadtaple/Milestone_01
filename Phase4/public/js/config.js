@@ -24,8 +24,9 @@
         const res = await fetch("/runtime-config.json", { cache: "no-store" });
         if (res.ok) {
           const cfg = await res.json();
-          if (cfg.apiBase) {
-            this.apiBase = cfg.apiBase.replace(/\/$/, "");
+          if ("apiBase" in cfg) {
+            const base = (cfg.apiBase || window.location.origin).replace(/\/$/, "");
+            this.apiBase = base;
             localStorage.setItem("zomato_api_base", this.apiBase);
           }
         }

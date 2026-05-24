@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app.py": {
+      "maxDuration": 60,
+      "excludeFiles": "{Phase1/**,Phase2/chroma_db/**,streamlit_app.py,.streamlit/**,**/__pycache__/**}"
+    }
+  }
+}
