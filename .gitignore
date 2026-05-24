@@ -17,8 +17,8 @@ Phase2/chroma_db/
 .stack_runtime.json
 logs/
 
-# Vercel build output (copied from Phase4/public by scripts/vercel_build.py)
-public/
+# Vercel build output at repo root (copied from Phase4/public by scripts/vercel_build.py)
+/public/
 
 # IDE / OS
 .idea/
