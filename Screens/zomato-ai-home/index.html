@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zomato AI — Discover</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">🍴</div>
+      <span class="brand-name">Zomato AI</span>
+      <div class="brand-badges">
+        <span class="pill-beta">Beta</span>
+        <span class="pill-api"><span class="dot"></span> API Active</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="session-label">Session ID: <strong id="session-id">AI-9921</strong></span>
+      <button type="button" class="btn-new-session" id="btn-new-session" aria-label="Start new session">
+        ↻ New session
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <aside class="filter-panel" aria-label="Search filters">
+      <h2>Find restaurants</h2>
+      <p class="filter-subtitle">Curated by Intelligence</p>
+
+      <form id="search-form" novalidate>
+        <div class="form-group">
+          <label for="location">Location</label>
+          <div class="input-wrap">
+            <span class="icon-left" aria-hidden="true">📍</span>
+            <select id="location" class="input-control">
+              <option value="Koramangala">Koramangala, Bangalore</option>
+              <option value="Indiranagar">Indiranagar, Bangalore</option>
+              <option value="Bellandur">Bellandur, Bangalore</option>
+              <option value="BTM">BTM, Bangalore</option>
+              <option value="Whitefield">Whitefield, Bangalore</option>
+              <option value="HSR">HSR, Bangalore</option>
+              <option value="Jayanagar">Jayanagar, Bangalore</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cuisine preference</label>
+          <div class="cuisine-pills" role="group" aria-label="Cuisine preference">
+            <button type="button" class="cuisine-pill active" data-cuisine="Asian">Asian</button>
+            <button type="button" class="cuisine-pill" data-cuisine="Continental">Continental</button>
+            <button type="button" class="cuisine-pill" data-cuisine="North Indian">North Indian</button>
+            <button type="button" class="cuisine-pill" data-cuisine="Italian">Italian</button>
+          </div>
+          <input type="hidden" id="cuisine" name="cuisine" value="Asian" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="max_cost">Max cost (₹)</label>
+            <input type="text" id="max_cost" class="input-control" value="₹2000" inputmode="numeric" />
+          </div>
+          <div class="form-group">
+            <label for="min_rating">Min rating</label>
+            <select id="min_rating" class="input-control">
+              <option value="3.5">3.5+</option>
+              <option value="4.0" selected>4.0+</option>
+              <option value="4.5">4.5+</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Contextual preferences</label>
+          <textarea id="description" class="input-control" rows="3" placeholder="Quiet rooftop for a date">Quiet rooftop for a date</textarea>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <span aria-hidden="true">✨</span>
+          Get AI recommendations
+        </button>
+      </form>
+    </aside>
+
+    <section class="content-panel" aria-label="Recommendations">
+      <article class="hero-empty">
+        <div class="hero-icon" aria-hidden="true">🍽️</div>
+        <h3>Discover your next meal</h3>
+        <p>
+          Adjust the filters on the left to allow our neural network to cross-reference thousands of
+          reviews, menus, and real-time vibe data for your perfect match.
+        </p>
+      </article>
+
+      <div class="trending-block">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="trend-icon" aria-hidden="true">📈</span>
+            <h3 id="trending-title">Trending in Koramangala</h3>
+          </div>
+          <a href="#" class="view-all">View All →</a>
+        </div>
+
+        <article class="featured-card">
+          <div
+            class="bg-image"
+            style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80');"
+            role="img"
+            aria-label="The Glasshouse Lounge interior"
+          ></div>
+          <div class="overlay"></div>
+          <div class="featured-badges">
+            <span class="badge-ai">AI RECOMMENDATION #1</span>
+            <span class="badge-rating">4.8 Rating</span>
+          </div>
+          <div class="featured-content">
+            <h4>The Glasshouse Lounge</h4>
+            <p class="desc">
+              A sophisticated urban escape with breathtaking views and an avant-garde cocktail menu,
+              perfect for a romantic evening under the stars.
+            </p>
+            <div class="featured-actions">
+              <button type="button" class="btn-white">View Menu</button>
+              <button type="button" class="btn-outline-white">Book a Table</button>
+            </div>
+          </div>
+        </article>
+
+        <div class="secondary-grid">
+          <article class="mini-card">
+            <div
+              class="mini-thumb"
+              style="background-image: url('https://images.unsplash.com/photo-1476124369801-61402d2a0f44?w=400&q=80');"
+              role="img"
+              aria-label="Pasta dish"
+            ></div>
+            <div class="mini-body">
+              <span class="mini-tag">AUTHENTIC ITALIAN</span>
+              <h5>L'Artisano</h5>
+              <p>Hand-rolled pasta and rustic Tuscan flavors in a cozy brick-walled trattoria.</p>
+            </div>
+          </article>
+          <article class="mini-card">
+            <div
+              class="mini-thumb"
+              style="background-image: url('https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&q=80');"
+              role="img"
+              aria-label="Sushi platter"
+            ></div>
+            <div class="mini-body">
+              <span class="mini-tag">PAN-ASIAN</span>
+              <h5>Umami Collective</h5>
+              <p>Omakase-inspired small plates and craft sake in a minimalist zen dining room.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="chat-fab" id="chat-fab" aria-label="Open chat">💬</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
