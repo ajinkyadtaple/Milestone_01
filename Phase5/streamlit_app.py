@@ -19,9 +19,9 @@ if str(PHASE5_ROOT) not in sys.path:
 
 import streamlit as st
 
-from src.config import configure_environment, groq_configured
-from src.stack import load_stack
-from src.ui import (
+from p5.config import configure_environment, groq_configured
+from p5.stack import load_stack
+from p5.ui import (
     inject_css,
     render_header,
     render_metrics,

@@ -6,10 +6,20 @@ Implementation lives in ``Phase5/streamlit_app.py``.
 """
 from __future__ import annotations
 
-import importlib.util
+import sys
 from pathlib import Path
 
-PHASE5_APP = Path(__file__).resolve().parent / "Phase5" / "streamlit_app.py"
+ROOT = Path(__file__).resolve().parent
+PHASE3 = ROOT / "Phase3"
+PHASE5 = ROOT / "Phase5"
+
+# Phase3 must be importable as ``src.*`` before Phase5 loads.
+if str(PHASE3) not in sys.path:
+    sys.path.insert(0, str(PHASE3))
+
+PHASE5_APP = PHASE5 / "streamlit_app.py"
+
+import importlib.util
 
 _spec = importlib.util.spec_from_file_location("phase5_streamlit", PHASE5_APP)
 if _spec is None or _spec.loader is None:

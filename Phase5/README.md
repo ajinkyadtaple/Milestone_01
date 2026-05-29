@@ -60,7 +60,7 @@ Phase5/
 ├── streamlit_app.py      # Main Streamlit app
 ├── requirements.txt
 ├── .env.example
-└── src/
+└── p5/
     ├── config.py         # Env, filters, Phase 3 path
     ├── stack.py          # @st.cache_resource agent loader
     └── ui.py             # Theme + components

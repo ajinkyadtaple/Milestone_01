@@ -46,7 +46,7 @@ Milestone_01/
 ├── Phase5/                  # Streamlit Cloud UI (port 8501) — in-process Phase 3
 │   ├── streamlit_app.py
 │   ├── requirements.txt
-│   └── src/
+│   └── p5/
 │       ├── config.py        # env + Streamlit secrets
 │       ├── stack.py         # @st.cache_resource agent loader
 │       └── ui.py            # Zomato light theme components
@@ -381,7 +381,7 @@ graph TB
 |------|---------|
 | `Phase5/streamlit_app.py` | Streamlit UI; loads Phase 3 agent via `@st.cache_resource` |
 | `streamlit_app.py` (root) | Thin wrapper for Streamlit Cloud deploy |
-| `Phase5/src/` | Config, stack loader, UI theme/components |
+| `Phase5/p5/` | Config, stack loader, UI theme/components |
 | `requirements.txt` | Installed by Streamlit Cloud on deploy |
 | `.streamlit/config.toml` | Zomato light theme |
 | `.streamlit/secrets.toml.example` | Template for cloud secrets (do not commit real keys) |

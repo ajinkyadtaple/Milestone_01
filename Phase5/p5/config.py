@@ -35,9 +35,18 @@ SECRET_KEYS = ("GROQ_API_KEY", "GROQ_MODEL", "GROQ_API_BASE_URL")
 
 
 def ensure_phase3_path() -> None:
+    """Put Phase3 first on sys.path; drop cached ``src`` if it is not Phase3's package."""
     phase3 = str(PHASE3_ROOT)
-    if phase3 not in sys.path:
-        sys.path.insert(0, phase3)
+    src_mod = sys.modules.get("src")
+    if src_mod is not None:
+        mod_file = (getattr(src_mod, "__file__", None) or "").replace("\\", "/")
+        if "/Phase3/" not in mod_file:
+            for key in list(sys.modules):
+                if key == "src" or key.startswith("src."):
+                    del sys.modules[key]
+    if phase3 in sys.path:
+        sys.path.remove(phase3)
+    sys.path.insert(0, phase3)
 
 
 def configure_environment() -> None:
