@@ -1,6 +1,6 @@
 # Phase-Wise Architecture: AI-Powered Restaurant Recommendation System
 
-This document describes the **current** system layout after Phases 1–3 and the **target** end state after Phase 4 (premium frontend). The production backend lives in **Phase 3**; the user-facing UI is split between a Phase 1 prototype and the planned Phase 4 app.
+This document describes the **current** system layout after Phases 1–4 and **Phase 5** (Streamlit Cloud deployment). The production backend lives in **Phase 3**; the user-facing UI is available via **Phase 4** (premium static app) or **Phase 5** (hosted Streamlit app).
 
 ---
 
@@ -43,15 +43,31 @@ Milestone_01/
         ├── index.html
         ├── css/styles.css
         └── js/app.js, config.js
+├── Phase5/                  # Streamlit Cloud UI (port 8501) — in-process Phase 3
+│   ├── streamlit_app.py
+│   ├── requirements.txt
+│   └── src/
+│       ├── config.py        # env + Streamlit secrets
+│       ├── stack.py         # @st.cache_resource agent loader
+│       └── ui.py            # Zomato light theme components
+├── streamlit_app.py         # Root entrypoint for Streamlit Cloud → Phase5
+├── requirements.txt         # Root deps for Streamlit Cloud / Vercel
+├── .streamlit/
+│   ├── config.toml          # Streamlit theme (Zomato red / light)
+│   └── secrets.toml.example # Streamlit Cloud secrets template
+└── Screens/                 # Static UI mockups (design reference)
+    └── zomato-ai-home/
 ```
 
 | Layer | Canonical location | Notes |
 |--------|-------------------|--------|
 | **Backend API** | `Phase3/` | All clients call this service |
 | **Frontend UI** | `Phase4/` | Static SPA; `POST` → Phase 3 only |
+| **Hosted UI (Streamlit)** | `Phase5/` | Phase 5; in-process Phase 3 agent; root `streamlit_app.py` for Cloud |
 | **Vector index & enriched CSV** | `Phase2/` | Phase 3 reads these paths; build index in Phase 2 |
 | **Baseline data pipeline** | `Phase1/` | Legacy demo; superseded for production |
 | **Legacy prototype** | `Phase1/src/templates/index.html` | Phase 1 API + Gemini on port 8000 |
+| **UI mockups** | `Screens/` | Static screens; not wired to API |
 
 ---
 
@@ -190,6 +206,16 @@ graph TB
 - **Run:** See `Phase4/README.md`.
 - **Next.js redesign:** Use [google-stitch-ui-prompt.md](./google-stitch-ui-prompt.md) with Google Stitch to generate UI mockups for a future Next.js frontend.
 
+### Hosted UI: Phase 5 (`Phase5/`) — **Done**
+
+- **Stack:** Streamlit (Python); runs Phase 3 agent **in-process** (no separate FastAPI server).
+- **Local:** `cd Phase5 && streamlit run streamlit_app.py` → **http://localhost:8501**
+- **Cloud:** [Streamlit Community Cloud](https://share.streamlit.io) — main file `streamlit_app.py` at repo root.
+- **Features:** Light Zomato theme, sidebar filters, recommendation cards with AI insights, follow-up chat, session reset, dataset/index metrics.
+- **Secrets:** `GROQ_API_KEY` via `Phase3/.env` locally or Streamlit Cloud **Settings → Secrets** (see `.streamlit/secrets.toml.example`).
+- **Dependencies:** `Phase5/requirements.txt` → root `requirements.txt`.
+- **Role:** Fastest path to a **public demo** without running Phase 3 + Phase 4 separately.
+
 ### Frontend ↔ backend mapping
 
 | UI control | API field |
@@ -238,6 +264,8 @@ gantt
     REST API, Agent, Groq, Sessions  :done, 2026-06-01, 5d
     section Phase 4
     Premium Web UI → Phase 3 API     :done, 2026-06-06, 7d
+    section Phase 5
+    Streamlit Cloud Deployment       :done, 2026-06-13, 3d
 ```
 
 ---
@@ -301,11 +329,118 @@ gantt
 
 ---
 
+### Phase 5: Streamlit Cloud deployment — **Done**
+
+**Goal:** One-click public hosting on free Streamlit Cloud, reusing the Phase 3 agent without a separate API process.
+
+```
+[GitHub repo] → [Streamlit Cloud] → streamlit_app.py
+                                        ↓
+                              [Phase 3 agent in-process]
+                                        ↓
+                    [Phase 2 CSV + Chroma (optional)] → [Groq API]
+```
+
+**Architecture (Phase 5):**
+
+```mermaid
+graph TB
+    subgraph Cloud [Streamlit Community Cloud]
+        GH[GitHub: Milestone_01]
+        SC[Streamlit runtime]
+        ST[streamlit_app.py]
+        Secrets[st.secrets<br/>GROQ_API_KEY]
+    end
+
+    subgraph InProcess [Same container as UI]
+        Agent[RecommendationAgent]
+        Mem[SessionMemory]
+        Hybrid[Hybrid / Structured Search]
+        CSV[(zomato_enriched.csv)]
+        Chroma[(ChromaDB optional)]
+    end
+
+    subgraph External [External services]
+        Groq[Groq API]
+    end
+
+    GH -->|git push| SC
+    SC --> ST
+    Secrets --> ST
+    ST --> Agent
+    Agent --> Mem
+    Agent --> Hybrid
+    Hybrid --> CSV
+    Hybrid --> Chroma
+    Agent --> Groq
+```
+
+**Key files:**
+
+| File | Purpose |
+|------|---------|
+| `Phase5/streamlit_app.py` | Streamlit UI; loads Phase 3 agent via `@st.cache_resource` |
+| `streamlit_app.py` (root) | Thin wrapper for Streamlit Cloud deploy |
+| `Phase5/src/` | Config, stack loader, UI theme/components |
+| `requirements.txt` | Installed by Streamlit Cloud on deploy |
+| `.streamlit/config.toml` | Zomato light theme |
+| `.streamlit/secrets.toml.example` | Template for cloud secrets (do not commit real keys) |
+
+**Deploy steps (Streamlit Cloud):**
+
+1. Push repo to GitHub (`main` branch).
+2. Open [share.streamlit.io](https://share.streamlit.io) → **Create app** → select repo.
+3. Set **Main file path:** `streamlit_app.py`.
+4. **Advanced settings → Secrets:** paste values from `.streamlit/secrets.toml.example` with your real `GROQ_API_KEY`.
+5. **Deploy.** App URL: `https://<app-name>.streamlit.app`.
+
+**Local run (same app as cloud):**
+
+```powershell
+cd Milestone_01
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+Or from Phase 5 directly:
+
+```powershell
+cd Milestone_01\Phase5
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+**Environment:**
+
+| Variable | Local | Streamlit Cloud |
+|----------|-------|-----------------|
+| `GROQ_API_KEY` | `Phase3/.env` | App **Secrets** |
+| `GROQ_MODEL` | optional `.env` | optional **Secrets** |
+| `GROQ_API_BASE_URL` | optional `.env` | optional **Secrets** |
+
+**Differences vs Phase 4:**
+
+| Aspect | Phase 4 | Phase 5 (Streamlit) |
+|--------|---------|---------------------|
+| Hosting | Self-hosted / Vercel static + API | Streamlit Cloud (free) |
+| Backend | Separate FastAPI on :8001 | Agent runs in-process |
+| UI stack | Custom HTML/CSS/JS | Streamlit widgets |
+| Best for | Production-style web app | Demos, sharing, quick deploy |
+
+**Limitations on free tier:**
+
+- Cold start loads ~81 MB CSV into memory; first request may be slow.
+- Chroma index is not in git; semantic search falls back to structured-only unless index is built in the environment.
+- Streamlit Cloud has resource limits; heavy embedding models may not run on all tiers.
+
+---
+
 ## How to run the full stack
 
 1. **Phase 2** (once): ingestion + vector index — `Phase2/README.md`
 2. **Phase 3** (backend): `cd Phase3 && python -m src.main` → **http://127.0.0.1:8001**
 3. **Phase 4** (UI): `cd Phase4 && python server.py` → **http://127.0.0.1:8080**
-4. **Phase 1** (optional legacy): port 8000 — not used for production demos
+4. **Phase 5** (Streamlit): `cd Phase5 && streamlit run streamlit_app.py` → **http://localhost:8501** (or deploy via root `streamlit_app.py` on Streamlit Cloud)
+5. **Phase 1** (optional legacy): port 8000 — not used for production demos
 
-**Phase 3** owns recommendations, sessions, hybrid search, and Groq. **Phase 4** is the production frontend.
+**Phase 3** owns recommendations, sessions, hybrid search, and Groq when using Phase 4. **Phase 5** embeds the same agent inside Streamlit for a single-process hosted demo.

@@ -1,0 +1,2 @@
+# Phase 5 — same deps as Streamlit Cloud (repo root requirements.txt)
+-r ../requirements.txt
